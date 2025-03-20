@@ -124,7 +124,7 @@ def check_ip():
         logging.warning("No Discord webhooks configured in environment variables.")
         return
 
-    ip_file = "previous_ip.txt"
+    ip_file = "/app/data/previous_ip.txt"
     previous_ip = None
 
     if os.path.exists(ip_file):
