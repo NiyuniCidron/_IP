@@ -153,8 +153,12 @@ def check_ip():
 
 def main():
     """Sets up the scheduler and runs the IP check."""
-    interval = int(os.environ.get("CHECK_INTERVAL", 1))  # default to 1
-    interval_unit = os.environ.get("CHECK_INTERVAL_UNIT", "minutes").lower()  # default to minutes.
+    interval = int(os.environ.get("CHECK_INTERVAL", 1))
+    interval_unit = os.environ.get("CHECK_INTERVAL_UNIT", "minutes").lower()
+
+    # Run check_ip() immediately on startup
+    logging.info("Running initial IP check...")
+    check_ip()
 
     if interval_unit == "seconds":
         schedule.every(interval).seconds.do(check_ip)
@@ -165,7 +169,7 @@ def main():
     elif interval_unit == "days":
         schedule.every(interval).days.do(check_ip)
     else:
-        logging.error("Invalid interval unit in config.json.")
+        logging.error("Invalid interval unit in environment variable.")
         return
 
     logging.info(f"Checking IP every {interval} {interval_unit}.")
