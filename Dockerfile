@@ -23,7 +23,7 @@ EXPOSE 9595
 RUN apt-get update && apt-get install -y curl
 
 # Define a volume for persistent data
-VOLUME /app
+VOLUME /app/data
 
 # Run the application
 CMD ["python", "external-ip-notify.py"]
