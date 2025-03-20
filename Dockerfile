@@ -9,7 +9,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the application code
-COPY . .
+COPY external-ip-notify.py .
 
 # Set environment variables (example)
 ENV DISCORD_WEBHOOKS="your_webhook_url1,your_webhook_url2"
