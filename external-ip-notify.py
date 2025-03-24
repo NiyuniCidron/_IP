@@ -1,13 +1,10 @@
 import requests
-import json
 import os
 import schedule
 import logging
 import time
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
-from http.server import BaseHTTPRequestHandler, HTTPServer
-import threading  # import threading
 
 # Configure logging
 logging.basicConfig(
@@ -174,29 +171,6 @@ def main():
 
     logging.info(f"Checking IP every {interval} {interval_unit}.")
 
-    class HealthCheckHandler(BaseHTTPRequestHandler):
-        def do_GET(self):
-            global ip_retrieved, last_check_time
-            if ip_retrieved and last_check_time and (
-                    time.time() - last_check_time) < 3600:  # check if ip retrieved and within 1 hour.
-                self.send_response(200)
-                self.send_header('Content-type', 'text/plain')
-                self.end_headers()
-                self.wfile.write(b'OK')
-            else:
-                self.send_response(500)  # internal server error if not working.
-                self.send_header('Content-type', 'text/plain')
-                self.end_headers()
-                self.wfile.write(b'ERROR')
-
-    health_port = 9595  # change port here.
-    httpd = HTTPServer(('0.0.0.0', health_port), HealthCheckHandler)
-    logging.info(f"Health check server started on port {health_port}.")
-
-    thread = threading.Thread(target=httpd.serve_forever)  # run in a thread.
-    thread.daemon = True  # close thread when main thread closes.
-    thread.start()
-
     try:
         while True:
             schedule.run_pending()
@@ -204,9 +178,6 @@ def main():
     except Exception as e:
         logging.critical(f"Scheduler error: {e}")
         send_error_discord_message(f"Scheduler error: {e}")
-    finally:
-        httpd.server_close()
-        logging.info("Health check server stopped.")
 
 if __name__ == "__main__":
     main()

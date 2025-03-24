@@ -27,7 +27,3 @@ VOLUME /app/data
 
 # Run the application
 CMD ["python", "external-ip-notify.py"]
-
-# Health check
-HEALTHCHECK --interval=1m --timeout=3s \
-  CMD curl -f http://127.0.0.1:9595 || exit 1
